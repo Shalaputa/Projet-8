@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Більше число</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+        }
+
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background-color: #f7f9fc;
+            padding: 20px;
+        }
+
+        .game-container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 24px;
+            background-color: #ffffff;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+            max-width: 600px;
+            width: 100%;
+        }
+
+        .player-col {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 16px;
+            flex: 1;
+        }
+
+        .player-name {
+            font-size: 24px;
+            font-weight: bold;
+            color: #000;
+            min-height: 29px;
+            text-align: center;
+            word-break: break-word;
+        }
+
+        .score-box {
+            width: 100%;
+            max-width: 140px;
+            height: 40px;
+            background-color: #00a6f5;
+            color: #000;
+            font-size: 22px;
+            font-weight: bold;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            border-radius: 4px;
+        }
+
+        .circle-number {
+            width: 110px;
+            height: 110px;
+            border-radius: 50%;
+            background-color: #ffff00;
+            border: 3px solid #000;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 40px;
+            font-weight: bold;
+            color: #000;
+        }
+
+        .center-col {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            flex: 1;
+        }
+
+        .btn-generate {
+            background-color: #00e600;
+            color: #000;
+            font-size: 20px;
+            font-weight: bold;
+            padding: 14px 24px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: transform 0.1s, opacity 0.2s;
+            white-space: nowrap;
+        }
+
+        .btn-restart {
+            background-color: #ff9800;
+            color: #000;
+            font-size: 18px;
+            font-weight: bold;
+            padding: 12px 20px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: transform 0.1s, opacity 0.2s;
+            white-space: nowrap;
+            display: none;
+        }
+
+        .btn-generate:hover,
+        .btn-restart:hover {
+            opacity: 0.9;
+        }
+
+        .btn-generate:active,
+        .btn-restart:active {
+            transform: scale(0.97);
+        }
+
+        @media (max-width: 500px) {
+            .game-container {
+                flex-direction: column;
+                gap: 20px;
+            }
+
+            .center-col {
+                order: 3;
+                width: 100%;
+            }
+
+            .btn-generate,
+            .btn-restart {
+                width: 100%;
+                max-width: 200px;
+            }
+        }
+    </style>
+    <script>
+        let userScore = 0;
+        let computerScore = 0;
+        let userName = "";
+
+        function initGame() {
+            userName = prompt("Введіть ваше ім'я:");
+            while (!userName || userName.trim() === "") {
+                userName = prompt("Ім'я не може бути порожнім. Введіть ваше ім'я:");
+            }
+            userName = userName.trim();
+            document.getElementById("user-name").textContent = userName;
+        }
+
+        function playRound() {
+            if (userScore >= 3 || computerScore >= 3) {
+                return;
+            }
+
+            let scenario = Math.floor(Math.random() * 3) + 1;
+            let userNum = 0;
+            let compNum = 0;
+
+            if (scenario === 1) {
+                userNum = Math.floor(Math.random() * 6) + 5;
+                let diff = Math.floor(Math.random() * 3) + 1;
+                compNum = userNum - diff;
+            } else if (scenario === 2) {
+                userNum = Math.floor(Math.random() * 8) + 1;
+                let diff = Math.floor(Math.random() * 2) + 1;
+                compNum = userNum + diff;
+            } else {
+                userNum = Math.floor(Math.random() * 7) + 1;
+                let diff = Math.floor(Math.random() * 2) + 2;
+                compNum = userNum + diff;
+            }
+
+            document.getElementById("user-number").textContent = userNum;
+            document.getElementById("computer-number").textContent = compNum;
+
+            if (userNum > compNum) {
+                userScore = userScore + 1;
+                document.getElementById("user-score").textContent = userScore;
+            } else if (compNum > userNum) {
+                computerScore = computerScore + 1;
+                document.getElementById("computer-score").textContent = computerScore;
+            }
+
+            if (userScore === 3 || computerScore === 3) {
+                setTimeout(function () {
+                    if (userScore === 3) {
+                        alert("Вітаємо, " + userName + "! Ви перемогли з рахунком " + userScore + ":" + computerScore + "!");
+                    } else {
+                        alert("Комп'ютер переміг з рахунком " + computerScore + ":" + userScore + "!");
+                    }
+                    document.getElementById("btn-generate").style.display = "none";
+                    document.getElementById("btn-restart").style.display = "block";
+                }, 100);
+            }
+        }
+
+        function restartGame() {
+            userScore = 0;
+            computerScore = 0;
+
+            document.getElementById("user-score").textContent = "0";
+            document.getElementById("computer-score").textContent = "0";
+            document.getElementById("user-number").textContent = "0";
+            document.getElementById("computer-number").textContent = "0";
+
+            document.getElementById("btn-restart").style.display = "none";
+            document.getElementById("btn-generate").style.display = "block";
+        }
+    </script>
+</head>
+<body onload="initGame()">
+    <main class="game-container">
+        <section class="player-col">
+            <span class="player-name" id="user-name">User</span>
+            <div class="score-box" id="user-score">0</div>
+            <div class="circle-number" id="user-number">0</div>
+        </section>
+        <section class="center-col">
+            <button class="btn-generate" id="btn-generate" type="button" onclick="playRound()">Generate</button>
+            <button class="btn-restart" id="btn-restart" type="button" onclick="restartGame()">Play Again</button>
+        </section>
+        <section class="player-col">
+            <span class="player-name" id="computer-name">Computer</span>
+            <div class="score-box" id="computer-score">0</div>
+            <div class="circle-number" id="computer-number">0</div>
+        </section>
+    </main>
+
+</body>
+</html>
